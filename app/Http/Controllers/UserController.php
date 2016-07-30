@@ -86,7 +86,11 @@ class UserController extends ApiController
     {
         $user = User::find($id);
 
-        return $user;
+        if (!$user) {
+            return $this->returnNotFound();
+        }
+
+        return $this->returnSuccess('get user success', $user);
     }
 
     public function destroy($id)
