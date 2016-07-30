@@ -25,4 +25,13 @@ class ApiController extends Controller
             'data' => $data
         ], 400);
     }
+
+    public function returnNotFound($message = 'not found', $data = [])
+    {
+        return response()->json([
+            'success' => false,
+            'message' => $message,
+            'data' => $data
+        ], 404);
+    }
 }
