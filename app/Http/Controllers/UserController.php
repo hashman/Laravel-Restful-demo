@@ -17,12 +17,33 @@ class UserController extends ApiController
 
     public function store(Request $request)
     {
-        $user = User::create([
+        $data = [
             'name' => $request->get('name'),
             'email' => $request->get('email'),
-            'password' => Hash::make($request->get('password'))
+            'password' => $request->get('password')
+        ];
+
+        $validator = \Validator::make([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => $data['password']
+        ],[
+            'name' => 'required|unique:users',
+            'email' => 'required|unique:users',
+            'password' => 'required'
         ]);
-        return $user;
+
+        if ($validator->fails()) {
+            return $this->returnFail((string)$validator->messages());
+        }
+
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password'])
+        ]);
+
+        return $this->returnSuccess('create user success', $user);
     }
 
     public function update(Request $request, $id)
