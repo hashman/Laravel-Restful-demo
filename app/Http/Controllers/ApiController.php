@@ -16,4 +16,13 @@ class ApiController extends Controller
             'data' => $data
         ], 200);
     }
+
+    public function returnFail($message = '', $data = [])
+    {
+        return response()->json([
+            'success' => false,
+            'message' => $message,
+            'data' => $data
+        ], 400);
+    }
 }
