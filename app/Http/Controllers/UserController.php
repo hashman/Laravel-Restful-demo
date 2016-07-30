@@ -28,7 +28,7 @@ class UserController extends ApiController
             'email' => $data['email'],
             'password' => $data['password']
         ],[
-            'name' => 'required|unique:users',
+            'name' => 'required',
             'email' => 'required|unique:users',
             'password' => 'required'
         ]);
@@ -50,12 +50,36 @@ class UserController extends ApiController
     {
         $user = User::find($id);
 
-        $user->name = $request->get('name');
-        $user->email = $request->get('email');
-        $user->password = $request->get('password');
+        if (!$user) {
+            return $this->returnNotFound();
+        }
+
+        $data = [
+            'name' => $request->get('name'),
+            'email' => $request->get('email'),
+            'password' => $request->get('password')
+        ];
+
+        $validator = \Validator::make([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => $data['password']
+        ],[
+            'name' => 'required',
+            'email' => 'required|unique:users,email,'.$user->id,
+            'password' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->returnFail((string)$validator->messages());
+        }
+
+        $user->name = $data['name'];
+        $user->email = $data['email'];
+        $user->password = $data['password'];
         $user->save();
 
-        return $user;
+        return $this->returnSuccess('update user success', $user);
     }
 
     public function show($id)
