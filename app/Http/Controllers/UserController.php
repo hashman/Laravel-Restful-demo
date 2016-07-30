@@ -8,11 +8,11 @@ use App\Http\Requests;
 use App\User;
 use Illuminate\Support\Facades\Hash;
 
-class UserController extends Controller
+class UserController extends ApiController
 {
     public function index()
     {
-        return User::all();
+        return $this->returnSuccess('get all user success!', User::all());
     }
 
     public function store(Request $request)
